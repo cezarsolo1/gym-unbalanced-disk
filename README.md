@@ -9,11 +9,9 @@ This repository includes
 2. **simulators** (both python and matlab)
 3. Instruction and scripts to connect to the **experimental setup**
 
-Note that the simulator is accurate model of the experimental setup for the provided model parameters. 
+Note that the simulator is an accurate model of the experimental setup for the provided model parameters. 
 
 # 1. benchmark datasets used for identification tasks.
-
-**Update 15 May: an updated hidden test dataset for the simulation has been released, and the simulation benchmarks have been updated**
 
 In `disc-benchmark-files/` you can find the following:
 
@@ -58,13 +56,13 @@ You can use the following baseline results to position the quality of your model
 Use any terminal or equivalent and enter
 
 ```
-python -m pip install git+https://github.com/GerbenBeintema/gym-unbalanced-disk@master
+python -m pip install git+https://github.com/MaartenSchoukens/gym-unbalanced-disk@master
 ```
 
 or download the repository and install using
 
 ```
-git clone https://github.com/GerbenBeintema/gym-unbalanced-disk.git #(or use manual download on the github page)
+git clone https://github.com/MaartenSchoukens/gym-unbalanced-disk.git
 cd gym-unbalanced-disk
 pip install
 ```
@@ -115,8 +113,8 @@ To use the experimental setup with the python environment you will need to follo
 Now use the following to create an environment with a connection to the system
 
 ```python
-env = gym.make('unbalanced-disk-exp-v0', dt=0.025, umax=3.) #both are equivilent (this one has a time limit build in)
-env = gym_unbalanced_disk.UnbalancedDisk(dt=0.025, umax=3.) #both are equivilent
+env = gym.make('unbalanced-disk-exp-v0', dt=0.025, umax=3.) #both are equivalent (this one has a time limit build in)
+env = gym_unbalanced_disk.UnbalancedDisk(dt=0.025, umax=3.) #both are equivalent
 ```
 
 ## 3.2 Matlab connection
