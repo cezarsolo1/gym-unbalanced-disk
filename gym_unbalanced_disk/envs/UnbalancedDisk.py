@@ -8,7 +8,7 @@ from os import path
 class UnbalancedDisk(gym.Env):
     '''
     UnbalancedDisk
-    th =            
+    th =
                   +-pi
                     |
            pi/2   ----- -pi/2
@@ -34,17 +34,17 @@ class UnbalancedDisk(gym.Env):
 
         self.umax = umax
         self.dt = dt #time step
- 
+
 
         # change anything here (compilable with the exercise instructions)
         self.action_space = spaces.Box(low=-umax,high=umax,shape=tuple()) #continuous
         # self.action_space = spaces.Discrete(5) #discrete
-        low = [-float('inf'),-40] 
+        low = [-float('inf'),-40]
         high = [float('inf'),40]
         self.observation_space = spaces.Box(low=np.array(low,dtype=np.float32),high=np.array(high,dtype=np.float32),shape=(2,))
 
         self.reward_fun = lambda self: np.exp(-(self.th%(2*np.pi)-np.pi)**2/(2*(np.pi/7)**2)) #example reward function, change this!
-        
+
         self.render_mode = render_mode
         self.viewer = None
         self.u = 0 #for visual
@@ -70,8 +70,8 @@ class UnbalancedDisk(gym.Env):
 
         reward = self.reward_fun(self)
         return self.get_obs(), reward, False, False, {}
-         
-    def reset(self,seed=None):
+
+    def reset(self, seed=None, options=None):
         self.th = np.random.normal(loc=0,scale=0.001)
         self.omega = np.random.normal(loc=0,scale=0.001)
         self.u = 0
@@ -85,7 +85,7 @@ class UnbalancedDisk(gym.Env):
     def render(self):
         import pygame
         from pygame import gfxdraw
-        
+
         screen_width = 500
         screen_height = 500
 
@@ -99,7 +99,7 @@ class UnbalancedDisk(gym.Env):
 
         self.surf = pygame.Surface((screen_width, screen_height))
         self.surf.fill((255, 255, 255))
-        
+
         gfxdraw.filled_circle( #central blue disk
             self.surf,
             screen_width//2,
@@ -114,7 +114,7 @@ class UnbalancedDisk(gym.Env):
             int(screen_width/2*0.06*1.3),
             (132,132,126),
         )
-        
+
         from math import cos, sin
         r = screen_width//2*0.40*1.3
         gfxdraw.filled_circle( #disk
@@ -131,7 +131,7 @@ class UnbalancedDisk(gym.Env):
             int(screen_width/2*0.22/8*1.3),
             (71,63,48),
         )
-        
+
         fname = path.join(path.dirname(__file__), "clockwise.png")
         self.arrow = pygame.image.load(fname)
         if self.u:
@@ -149,7 +149,7 @@ class UnbalancedDisk(gym.Env):
             arrow_rot = pygame.transform.scale(self.arrow,Z)
             if self.u<0:
                 arrow_rot = pygame.transform.flip(arrow_rot, True, False)
-                
+
         self.surf = pygame.transform.flip(self.surf, False, True)
         self.viewer.blit(self.surf, (0, 0))
         if self.u:
@@ -174,7 +174,7 @@ class UnbalancedDisk_sincos(UnbalancedDisk):
     """docstring for UnbalancedDisk_sincos"""
     def __init__(self, umax=3., dt = 0.025):
         super(UnbalancedDisk_sincos, self).__init__(umax=umax, dt=dt)
-        low = [-1,-1,-40.] 
+        low = [-1,-1,-40.]
         high = [1,1,40.]
         self.observation_space = spaces.Box(low=np.array(low,dtype=np.float32),high=np.array(high,dtype=np.float32),shape=(3,))
 
@@ -205,5 +205,4 @@ if __name__ == '__main__':
     plt.plot(Y[:,0])
     plt.title(f'max(Y[:,0])={max(Y[:,0])}')
     plt.show()
-    
 
