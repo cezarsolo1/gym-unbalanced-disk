@@ -11,8 +11,9 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BASE = os.path.join(HERE, 'disc-benchmark-files')
-FIG_DIR = os.path.join(HERE, 'Figures Kayden')
+REPO_ROOT = os.path.dirname(HERE)
+BASE = os.path.join(REPO_ROOT, 'disc-benchmark-files')
+FIG_DIR = os.path.join(HERE, 'figures')
 os.makedirs(FIG_DIR, exist_ok=True)
 
 # ── Load data ─────────────────────────────────────────────────────────────────
@@ -182,16 +183,17 @@ err_full   = th_sim[SKIP:] - th_raw_sim
 sim_zoom   = slice(28950, 29350)  # window around the peak simulation error
 
 fig, axes = plt.subplots(2, 1, figsize=(6, 5))
-axes[0].plot(th_raw_sim[sim_zoom], label='measured', color='steelblue', linewidth=1.2)
-axes[0].plot(th_sim[SKIP:][sim_zoom], label='LSTM simulation', color='crimson', ls='--', linewidth=1.2)
+axes[0].plot(th_raw_sim[sim_zoom], label='measured', color='steelblue', linewidth=1.4)
+axes[0].plot(th_sim[SKIP:][sim_zoom], label='LSTM simulation', color='crimson', ls='--', linewidth=1.4)
 axes[0].set_ylabel(r'$\theta$ [rad]'); axes[0].set_xlabel('sample (zoom)')
 axes[0].legend(); axes[0].grid(True, alpha=0.4)
 axes[0].set_title('LSTM free-running simulation vs measured (zoom)')
 
 axes[1].plot(err_full, color='darkorange', linewidth=0.6)
 axes[1].axhline(0, color='k', linewidth=0.5)
+axes[1].axvspan(sim_zoom.start, sim_zoom.stop, color='red', alpha=0.15)
 axes[1].set_ylabel('error [rad]'); axes[1].set_xlabel('sample (full run)')
-axes[1].set_title('Simulation error over the full dataset')
+axes[1].set_title('Simulation error over the full dataset (zoom window shaded)')
 axes[1].grid(True, alpha=0.4)
 plt.tight_layout()
 plt.savefig(os.path.join(FIG_DIR, 'LSTM_simulation.png'), dpi=200)
