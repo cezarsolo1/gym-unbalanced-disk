@@ -6,3 +6,4 @@ disc-benchmark-files/Untitled.ipynb
 testing/
 *.pdf
 disc-benchmark-files/*.npz
+*.pt

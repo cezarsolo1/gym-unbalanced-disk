@@ -3,11 +3,17 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 torch.manual_seed(42)
 np.random.seed(42)
 
-BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'disc-benchmark-files')
+HERE = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.join(HERE, 'disc-benchmark-files')
+FIG_DIR = os.path.join(HERE, 'Figures Kayden')
+os.makedirs(FIG_DIR, exist_ok=True)
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 raw    = np.load(os.path.join(BASE, 'training-val-test-data.npz'))
@@ -73,7 +79,7 @@ dl_tr  = DataLoader(ds_tr,  batch_size=64, shuffle=True)
 dl_val = DataLoader(ds_val, batch_size=64)
 
 EPOCHS     = 500
-CKPT_PATH  = '/tmp/lstm_sysid_best.pt'
+CKPT_PATH  = os.path.join(HERE, 'lstm_sysid_best.pt')
 best_val   = float('inf')
 
 if os.path.exists(CKPT_PATH):
@@ -123,6 +129,19 @@ print(f'=== 1-step prediction (train) ===')
 print(f'RMSE : {rmse_pred:.5f} rad  ({rmse_pred/(2*np.pi)*360:.3f}°)  NRMS: {rmse_pred/th_raw.std()*100:.2f}%')
 print(f'Linear ARX baseline: 0.00665 rad\n')
 
+# ── Plot: 1-step prediction (zoomed window for readability) ───────────────────
+zoom = slice(2000, 3000)
+fig, ax = plt.subplots(figsize=(6, 3))
+ax.plot(th_raw[zoom], label='measured', color='steelblue')
+ax.plot(th_pred[zoom], label='LSTM prediction', color='crimson', ls='--')
+ax.set_xlabel('sample'); ax.set_ylabel(r'$\theta$ [rad]')
+ax.set_title('LSTM one-step-ahead prediction (zoom)')
+ax.legend(); ax.grid(True, alpha=0.4)
+plt.tight_layout()
+plt.savefig(os.path.join(FIG_DIR, 'LSTM_prediction.png'), dpi=200)
+plt.close()
+print(f'Saved {os.path.join(FIG_DIR, "LSTM_prediction.png")}')
+
 # ── Simulation (autoregressive from step 50) ──────────────────────────────────
 def simulate_lstm(model, u_n, th_n_init, skip=50, device='cpu'):
     model.eval()
@@ -156,6 +175,23 @@ print(f'=== Simulation (train, autoregressive from step {SKIP}) ===')
 print(f'RMSE : {rmse_sim:.5f} rad  ({rmse_sim/(2*np.pi)*360:.3f}°)  NRMS: {rmse_sim/th_raw.std()*100:.2f}%')
 print(f'Linear ARX baseline: 0.255 rad')
 print(f'Good NN target:      0.02710 rad\n')
+
+# ── Plot: free-running simulation vs measured, plus error ─────────────────────
+fig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True)
+axes[0].plot(th_raw[SKIP:], label='measured', color='steelblue', linewidth=0.8)
+axes[0].plot(th_sim[SKIP:], label='LSTM simulation', color='crimson', linewidth=0.8, alpha=0.8)
+axes[0].set_ylabel(r'$\theta$ [rad]'); axes[0].legend(); axes[0].grid(True, alpha=0.4)
+axes[0].set_title('LSTM free-running simulation (autoregressive)')
+
+err = th_sim[SKIP:] - th_raw[SKIP:]
+axes[1].plot(err, color='darkorange', linewidth=0.6)
+axes[1].axhline(0, color='k', linewidth=0.5)
+axes[1].set_ylabel('error [rad]'); axes[1].set_xlabel('sample')
+axes[1].grid(True, alpha=0.4)
+plt.tight_layout()
+plt.savefig(os.path.join(FIG_DIR, 'LSTM_simulation.png'), dpi=200)
+plt.close()
+print(f'Saved {os.path.join(FIG_DIR, "LSTM_simulation.png")}')
 
 # ── Prediction submission ─────────────────────────────────────────────────────
 pred_data   = np.load(os.path.join(BASE, 'hidden-test-prediction-submission-file.npz'))
