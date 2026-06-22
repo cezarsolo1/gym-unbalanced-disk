@@ -13,4 +13,4 @@ PPO-based actor-critic policy for Section 4.2.2 (single policy for swing-up and
   (continuous-action variant), and the real hardware run.
 
 Note: there is a separate `AC-ppo/` folder from a teammate's own PPO
-reference-tracking work — this folder is Kayden's independent implementation.
+reference-tracking work - this folder is Kayden's independent implementation.
