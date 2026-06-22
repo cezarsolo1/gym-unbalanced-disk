@@ -10,7 +10,7 @@ import gym_unbalanced_disk
 # Connects to the physical disc via USB — make sure the cable is plugged in
 env = gym_unbalanced_disk.UnbalancedDisk_exp_sincos()
 
-model = PPO.load(os.path.join(REPO_ROOT, 'ppo_swingup'))
+model = PPO.load(os.path.join(REPO_ROOT, 'ppo_swingup_max.zip'))
 print('Model loaded. Ctrl-C to stop.')
 print('Waiting for disc to settle before first episode...')
 
