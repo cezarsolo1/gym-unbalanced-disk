@@ -1,7 +1,7 @@
 # GP System Identification + PPO Swing-Up Policy (Cezar)
 
-Cezar's contributions covering GP-based system identification (Section 3) and
-PPO-based actor-critic swing-up policies (Section 4). See report Sections III and IV.A.
+Cezar's contributions covering GP-based system identification and
+PPO-based actor-critic swing-up policies. 
 
 ## `GP/` — Gaussian Process System Identification
 
